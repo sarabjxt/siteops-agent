@@ -1,4 +1,4 @@
-import { FunctionDeclaration } from "@google/genai"
+import { FunctionDeclaration, Type } from "@google/genai"
 import { db } from "@/db/drizzle"
 import { expenses, inventory } from "@/db/schema"
 import { z } from "zod"
@@ -74,28 +74,67 @@ export type ToolFailureResult = {
 export type AgentToolResult =
   InventoryToolResult | ExpenseToolResult | ToolFailureResult
 
-// Helper to sanitize zod-to-json-schema output for Gemini
-function toGeminiSchema(schema: any) {
-  const jsonSchema = zodToJsonSchema(schema, { target: "openAi" }) as Record<
-    string,
-    any
-  >
-  delete jsonSchema.$schema
-  return jsonSchema
-}
-
 export const agentFunctionDeclarations: FunctionDeclaration[] = [
   {
     name: "recordInventoryArrival",
-    description:
-      "Logs arriving construction materials (e.g., cement, TMT steel, aggregate, bricks) to site inventory.",
-    parameters: toGeminiSchema(recordInventoryArrivalSchema),
+    description: "Logs arriving construction materials to site inventory.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        item: {
+          type: Type.STRING,
+          description:
+            "Name of the construction material (e.g. Cement, TMT 12mm bar, Sand)",
+        },
+        quantity: {
+          type: Type.NUMBER,
+          description: "Numeric quantity received",
+        },
+        unit: {
+          type: Type.STRING,
+          description:
+            "Unit of measurement (bags, tons, brass, pieces, trucks)",
+        },
+        supplier: {
+          type: Type.STRING,
+          description: "Vendor, truck number, or supplier name if mentioned",
+        },
+      },
+      required: ["item", "quantity", "unit"],
+    },
   },
   {
     name: "recordSiteExpense",
     description:
-      "Records money paid out or expenses incurred on site (labor payments, petty cash, diesel, supplier payments).",
-    parameters: toGeminiSchema(recordSiteExpenseSchema),
+      "Records money paid out or expenses incurred on site (labor, materials, diesel, petty cash).",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        category: {
+          type: Type.STRING,
+          enum: ["material", "labor", "equipment", "petty_cash", "fuel"],
+          description: "Expense category",
+        },
+        amount: {
+          type: Type.NUMBER,
+          description: "Amount paid or due in INR",
+        },
+        paidTo: {
+          type: Type.STRING,
+          description: "Recipient, mistri/labor contractor, or shop name",
+        },
+        paymentMode: {
+          type: Type.STRING,
+          enum: ["cash", "upi", "bank_transfer", "credit"],
+          description: "Payment method",
+        },
+        notes: {
+          type: Type.STRING,
+          description: "Short memo or context for the expenditure",
+        },
+      },
+      required: ["category", "amount"],
+    },
   },
 ]
 
