@@ -1,21 +1,23 @@
-# Next.js template
+# SiteOps Agent
 
-This is a Next.js template with shadcn/ui.
+> Autonomous construction ops agent built with TypeScript, Next.js App Router, and LLM tool calling.
 
-## Adding components
+---
 
-To add components to your app, run the following command:
+## Key Features
 
-```bash
-npx shadcn@latest add button
-```
+- **Autonomous ReAct Tool Loop:** Implemented directly with `@google/genai` to handle model reasoning, tool invocations, state accumulation, and multi-turn closure.
+- **Multi-Intent Parsing:** If a single message mentions both a delivery and an expense, the agent identifies and runs multiple distinct tools in the same turn.
+- **End-to-End Type Safety:** Strict validation pipeline using **Zod** for runtime argument parsing and TypeScript type inference.
+- **Live Execution Trace Inspector:** Visual, real-time UI log detailing exact model thought outputs, invoked tool names, parameter payloads, and database responses.
 
-This will place the ui components in the `components` directory.
+---
 
-## Using components
+## Tech Stack
 
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+- **Framework:** Next.js (App Router)
+- **Language:** TypeScript
+- **AI / LLM:** Google Gen AI SDK (`@google/genai`)
+- **Database & ORM:** PostgreSQL (Neon), Drizzle ORM
+- **Validation:** Zod
+- **UI & Styling:** Tailwind CSS, shadcn/ui
