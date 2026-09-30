@@ -101,13 +101,13 @@ export async function POST(req: Request) {
           part.functionCall ? [part.functionCall] : []
         ) ?? []
 
-      // Terminal state: Model produced text without calling tools
+      // No function calls, so we're done
       if (functionCalls.length === 0) {
         finalReply = response.text || "Action logged successfully."
         break
       }
 
-      // Preserve model's thought step in conversation history
+      // Keep step's conversation history, so the model can refer to previous steps
       if (candidate?.content) {
         contents.push(candidate.content)
       }
@@ -183,8 +183,8 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const [latestInventory, latestExpenses] = await Promise.all([
-      db.select().from(inventory).orderBy(desc(inventory.id)).limit(15),
-      db.select().from(expenses).orderBy(desc(expenses.id)).limit(15),
+      db.select().from(inventory).orderBy(desc(inventory.id)).limit(10),
+      db.select().from(expenses).orderBy(desc(expenses.id)).limit(10),
     ])
 
     return NextResponse.json({

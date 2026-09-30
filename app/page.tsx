@@ -50,7 +50,7 @@ export default function SiteOpsDashboard() {
         }
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") {
-          return // Expected cancellation, do not log
+          return
         }
         console.error("Initial load failed", err)
       }
@@ -138,9 +138,8 @@ export default function SiteOpsDashboard() {
     <div className="flex min-h-screen flex-col bg-background font-sans text-foreground lg:h-screen lg:overflow-hidden">
       <SiteOpsHeader />
 
-      {/* Responsive Layout: Stacks on mobile/tablet, side-by-side 2-column on desktop */}
       <main className="grid flex-1 grid-cols-1 overflow-hidden lg:grid-cols-12">
-        {/* Left Section: WhatsApp Agent Stream & Simulator */}
+        {/* Left Section: Chat */}
         <section className="flex flex-col overflow-y-scroll border-b border-border lg:col-span-5 lg:border-r lg:border-b-0">
           <div className="p-4 lg:px-6">
             <SamplePrompts
