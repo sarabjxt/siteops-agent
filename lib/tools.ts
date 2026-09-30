@@ -2,7 +2,6 @@ import { FunctionDeclaration, Type } from "@google/genai"
 import { db } from "@/db/drizzle"
 import { expenses, inventory } from "@/db/schema"
 import { z } from "zod"
-import zodToJsonSchema from "zod-to-json-schema"
 
 export const recordInventoryArrivalSchema = z.object({
   item: z
