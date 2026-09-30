@@ -8,6 +8,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
   TableBody,
@@ -21,9 +22,10 @@ import { Receipt } from "lucide-react"
 
 interface ExpenseTableProps {
   items: ExpenseRow[]
+  isLoading: boolean
 }
 
-export function ExpenseTable({ items }: ExpenseTableProps) {
+export function ExpenseTable({ items, isLoading }: ExpenseTableProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="px-2">
@@ -38,7 +40,16 @@ export function ExpenseTable({ items }: ExpenseTableProps) {
         </div>
       </div>
       <div className="overflow-hidden rounded-2xl bg-muted/50 dark:bg-card">
-        {items.length === 0 ? (
+        {isLoading ? (
+          <Empty className="py-8">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Spinner />
+              </EmptyMedia>
+              <EmptyTitle>Loading...</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        ) : items.length === 0 ? (
           <Empty className="py-8">
             <EmptyHeader>
               <EmptyMedia variant="icon">

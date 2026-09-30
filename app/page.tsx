@@ -25,12 +25,10 @@ export default function SiteOpsDashboard() {
       id: "welcome-msg",
       sender: "agent",
       text: "SiteOps agent online. Send raw site updates, vendor notes, or cash payments in English, Hindi, or Hinglish.",
-      timestamp: new Date().toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      timestamp: getTimestamp(),
     },
   ])
+  const [initialDataLoading, setInitialDataLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [traces, setTraces] = useState<ToolExecutionTrace[]>([])
   const [inventoryList, setInventoryList] = useState<InventoryRow[]>([])
@@ -40,6 +38,7 @@ export default function SiteOpsDashboard() {
     const controller = new AbortController()
     async function loadData() {
       try {
+        setInitialDataLoading(true)
         const res = await fetch("/api/agent", {
           signal: controller.signal,
         })
@@ -53,6 +52,10 @@ export default function SiteOpsDashboard() {
           return
         }
         console.error("Initial load failed", err)
+      } finally {
+        if (!controller.signal.aborted) {
+          setInitialDataLoading(false)
+        }
       }
     }
     loadData()
@@ -64,10 +67,7 @@ export default function SiteOpsDashboard() {
       const trimmed = textToSend.trim()
       if (!trimmed || loading) return
 
-      const timeStr = new Date().toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+      const timeStr = getTimestamp()
 
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -97,10 +97,7 @@ export default function SiteOpsDashboard() {
           id: crypto.randomUUID(),
           sender: "agent",
           text: data.reply,
-          timestamp: new Date().toLocaleTimeString("en-IN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+          timestamp: getTimestamp(),
         }
 
         setMessages((prev) => [...prev, agentMessage])
@@ -120,10 +117,7 @@ export default function SiteOpsDashboard() {
             id: crypto.randomUUID(),
             sender: "agent",
             text: errMsg,
-            timestamp: new Date().toLocaleTimeString("en-IN", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
+            timestamp: getTimestamp(),
             isError: true,
           },
         ])
@@ -182,8 +176,14 @@ export default function SiteOpsDashboard() {
 
             <TabsContent value="ledger" className="flex-1 overflow-y-auto">
               <div className="flex flex-col gap-6 sm:gap-8">
-                <InventoryTable items={inventoryList} />
-                <ExpenseTable items={expenseList} />
+                <InventoryTable
+                  items={inventoryList}
+                  isLoading={initialDataLoading}
+                />
+                <ExpenseTable
+                  items={expenseList}
+                  isLoading={initialDataLoading}
+                />
               </div>
             </TabsContent>
 
@@ -195,4 +195,11 @@ export default function SiteOpsDashboard() {
       </main>
     </div>
   )
+}
+
+function getTimestamp() {
+  return new Date().toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
 }

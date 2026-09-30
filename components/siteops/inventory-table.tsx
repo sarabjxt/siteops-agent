@@ -8,6 +8,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
   TableBody,
@@ -21,9 +22,10 @@ import { Package } from "lucide-react"
 
 interface InventoryTableProps {
   items: InventoryRow[]
+  isLoading: boolean
 }
 
-export function InventoryTable({ items }: InventoryTableProps) {
+export function InventoryTable({ items, isLoading }: InventoryTableProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="px-2">
@@ -38,7 +40,16 @@ export function InventoryTable({ items }: InventoryTableProps) {
         </div>
       </div>
       <div className="overflow-hidden rounded-2xl bg-muted/50 dark:bg-card">
-        {items.length === 0 ? (
+        {isLoading ? (
+          <Empty className="py-8">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Spinner />
+              </EmptyMedia>
+              <EmptyTitle>Loading...</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        ) : items.length === 0 ? (
           <Empty className="py-8">
             <EmptyHeader>
               <EmptyMedia variant="icon">
