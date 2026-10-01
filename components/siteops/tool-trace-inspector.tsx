@@ -31,7 +31,7 @@ export function ToolTraceInspector({ traces }: ToolTraceInspectorProps) {
       </div>
       <div className="overflow-hidden rounded-2xl bg-muted/50 p-4 dark:bg-card">
         {traces.length === 0 ? (
-          <Empty className="py-12">
+          <Empty className="px-4 py-8">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <Terminal />
@@ -51,7 +51,7 @@ export function ToolTraceInspector({ traces }: ToolTraceInspectorProps) {
                 className="flex flex-col gap-2 rounded-2xl border border-border bg-muted/40 p-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-semibold text-foreground">
+                  <span className="font-mono text-xs font-medium text-foreground">
                     {trace.tool}
                   </span>
                   {trace.result.success ? (
