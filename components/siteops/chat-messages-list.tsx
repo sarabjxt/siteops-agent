@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner"
 import type { ChatMessage } from "@/types/siteops"
 import { AlertCircle } from "lucide-react"
 import Markdown from "react-markdown"
+import { useMediaQuery } from "@base-ui/react/unstable-use-media-query"
 
 interface ChatMessagesListProps {
   messages: ChatMessage[]
@@ -19,8 +20,15 @@ export const ChatMessagesList = memo(function ChatMessagesList({
 }: ChatMessagesListProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  const isDesktop = useMediaQuery("(min-width: 700px)", {
+    defaultMatches: true,
+  })
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: isDesktop ? "start" : "nearest",
+    })
   }, [messages, loading])
 
   return (
