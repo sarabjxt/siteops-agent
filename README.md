@@ -2,6 +2,8 @@
 
 > Autonomous construction ops agent built with TypeScript, Next.js App Router, and LLM tool calling.
 
+Live Demo: **[https://siteops-agent.vercel.app/](https://siteops-agent.vercel.app/)**
+
 ---
 
 ## Key Features
